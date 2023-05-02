@@ -19,7 +19,7 @@ window.onload = function()
     // canvas accroché sur la page HTML
     ctx = canvas.getContext('2d');
     //retourne un contexte de dessin 
-    snakee = new Snake([[6,4], [5, 4], [4,4]]);
+    snakee = new Snake([[6,4], [5, 4], [4,4]], "right");
     refreshCanvas();
 
     }
@@ -37,8 +37,9 @@ window.onload = function()
             ctx.fillRect(x, y, BlockSize, BlockSize);
     }
 
-    function Snake(body) {
+    function Snake(body, direction) {
         this.body = body;
+        this.direction = direction;
         this.draw = function() {
             ctx.save();
             ctx.fillStyle = "#ff0000";
@@ -49,9 +50,67 @@ window.onload = function()
         };
         this.advance = function() {
             var nextPosition = this.body[0].slice();
-            nextPosition[0] ++;
+            switch(this.direction){
+                case "left":
+                    nextPosition[0] --
+                    // 0 on parle du x
+                    break;
+                case "right" :
+                    nextPosition[0] ++
+                    break;
+                case "down":
+                    nextPosition[1] ++
+                    //1 on parle du y
+                    break;
+                case "up":
+                    nextPosition[1] --
+                    break;
+                default:
+                        throw("invalid direction");
+            }
             this.body.unshift(nextPosition);
             this.body.pop();
+        };
+            this.setDirection = function(newDirection) 
+            {
+                var allowdDirections;
+                //directions permises
+                switch(this.direction)
+                {
+                    case "left":
+                    case "right":
+                        allowdDirections = ["up", "down"];
+                    case "down":
+                    case "up":
+                        allowdDirections =handleKeyDown ["left", "right"];
+                    default:
+                            throw("invalid direction");
+                }
+                if(allowdDirections.indexOf(newDirection) > -1) {
+                    this.direction = newDirection;
+                }
+            };
+    }
+
+    document.onkeydown = function handleKeyDown(e) {
+        var key = e.eventPhase;
+        var newDirection;
+        switch(key){
+            case 37:
+                newDirection = "left";
+                break;
+            case 38:
+                newDirection = "up";
+                break;
+            case 39:
+                newDirection = "right";
+                break;
+            case 40:
+                newDirection = "left";
+                break;
+            default:
+                return;
         }
+        snakee.setDirection(newDirection);
     }
 }
