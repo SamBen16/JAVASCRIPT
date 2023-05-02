@@ -7,6 +7,7 @@ window.onload = function()
     var ctx;
     var delay = 1000;
     var snakee;
+    var applee;
     init();
 
     function init() {
@@ -20,6 +21,7 @@ window.onload = function()
     ctx = canvas.getContext('2d');
     //retourne un contexte de dessin 
     snakee = new Snake([[6,4], [5, 4], [4,4]], "right");
+    applee = new Apple([10, 10]);
     refreshCanvas();
 
     }
@@ -27,6 +29,7 @@ window.onload = function()
     function refreshCanvas() {
         ctx.clearRect(0,0, canvasHeight, canvasWidth);
         snakee.draw();
+        applee.draw();
         snakee.advance();
         setTimeout(refreshCanvas, delay);
     }
@@ -92,8 +95,25 @@ window.onload = function()
             };
     }
 
+    function Apple(position)
+    {
+        this.position = position;
+        this.draw = function() 
+        {
+            ctx.save();
+            ctx.fillStyle = "#33cc33";
+            ctx.beginPath();
+            var radius = BlockSize*2;
+            var x = position[0]*BlockSize + radius;
+            var y = position[1]*BlockSize + radius; 
+            ctx.arc(x,y, radius, 0, Math.PI+2, true);
+            ctx.fill();
+            ctx.restore();
+        };
+    }
+
     document.onkeydown = function handleKeyDown(e) {
-        var key = e.eventPhase;
+        var key = e.event;
         var newDirection;
         switch(key){
             case 37:
